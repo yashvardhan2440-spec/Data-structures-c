@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <math.h>
+
+#define MAX 100
+
+int stack[MAX], top = -1;
+
+void push(int x) {
+    stack[++top] = x;
+}
+
+int pop() {
+    return stack[top--];
+}
+
+int evaluate(char exp[]) {
+    int i, a, b;
+
+    for (i = 0; exp[i] != '\0'; i++) {
+        if (exp[i] == ' ')
+            continue;
+
+        if (isdigit(exp[i])) {
+            push(exp[i] - '0');
+        } else {
+            b = pop();
+            a = pop();
+
+            switch (exp[i]) {
+                case '+': push(a + b); break;
+                case '-': push(a - b); break;
+                case '*': push(a * b); break;
+                case '/': push(a / b); break;
+                case '^': push(pow(a, b)); break;
+            }
+        }
+    }
+
+    return pop();
+}
+
+int main() {
+    char exp1[] = "2 3 1 * + 9 -";
+    char exp2[] = "2 2 + 2 / 5 * 7 +";
+
+    printf("%d\n", evaluate(exp1));
+    printf("%d\n", evaluate(exp2));
+
+    return 0;
+}
