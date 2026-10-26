@@ -1,0 +1,60 @@
+
+#include <stdio.h>
+#define MAX 5
+
+int deque[MAX], front = -1, rear = -1;
+
+int isEmpty(void) {
+    return front == -1;
+}
+
+int isFull(void) {
+    return (front == 0 && rear == MAX - 1) ||
+           (front == rear + 1);
+}
+
+void insertRear(int value) {
+    if (isFull()) {
+        printf("Deque is full\n");
+        return;
+    }
+    if (isEmpty())
+        front = rear = 0;
+    else
+        rear = (rear + 1) % MAX;
+    deque[rear] = value;
+}
+
+void getFront(void) {
+    if (isEmpty())
+        printf("Deque is empty\n");
+    else
+        printf("Front item: %d\n", deque[front]);
+}
+
+void getRear(void) {
+    if (isEmpty())
+        printf("Deque is empty\n");
+    else
+        printf("Rear item: %d\n", deque[rear]);
+}
+
+int main(void) {
+    int choice, value;
+    do {
+        printf("\n1.Insert at rear 2.getFront 3.getRear 4.isEmpty 5.isFull 0.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter value: "); scanf("%d", &value);
+                insertRear(value); break;
+            case 2: getFront(); break;
+            case 3: getRear(); break;
+            case 4: printf(isEmpty() ? "Deque is empty\n" : "Deque is not empty\n"); break;
+            case 5: printf(isFull() ? "Deque is full\n" : "Deque is not full\n"); break;
+            case 0: break;
+            default: printf("Invalid choice\n");
+        }
+    } while (choice != 0);
+    return 0;
+}

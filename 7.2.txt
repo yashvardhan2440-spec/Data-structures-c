@@ -1,0 +1,89 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *front = NULL, *rear = NULL;
+
+int isEmpty(void) {
+    return front == NULL;
+}
+
+void enqueue(int value) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    if (rear == NULL)
+        front = rear = newNode;
+    else {
+        rear->next = newNode;
+        rear = newNode;
+    }
+    printf("Inserted: %d\n", value);
+}
+
+void dequeue(void) {
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+        return;
+    }
+    Node *temp = front;
+    printf("Deleted: %d\n", temp->data);
+    front = front->next;
+    if (front == NULL)
+        rear = NULL;
+    free(temp);
+}
+
+void showFrontRear(void) {
+    if (isEmpty())
+        printf("Queue is empty\n");
+    else
+        printf("Front: %d\nRear: %d\n", front->data, rear->data);
+}
+
+void display(void) {
+    Node *current = front;
+    if (current == NULL) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Queue: ");
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int choice, value;
+    do {
+        printf("\n1.Enqueue 2.Dequeue 3.Front and Rear 4.isEmpty 5.Display 0.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter value: ");
+                scanf("%d", &value);
+                enqueue(value);
+                break;
+            case 2: dequeue(); break;
+            case 3: showFrontRear(); break;
+            case 4: printf(isEmpty() ? "Queue is empty\n" : "Queue is not empty\n"); break;
+            case 5: display(); break;
+            case 0: break;
+            default: printf("Invalid choice\n");
+        }
+    } while (choice != 0);
+    while (front != NULL)
+        dequeue();
+    return 0;
+}

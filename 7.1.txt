@@ -1,0 +1,68 @@
+
+#include <stdio.h>
+#define MAX 5
+
+int q[MAX], front = -1, rear = -1;
+
+int isEmpty(void) {
+    return front == -1;
+}
+
+int isFull(void) {
+    return (rear + 1) % MAX == front;
+}
+
+void enqueue(int value) {
+    if (isFull()) {
+        printf("Queue is full\n");
+        return;
+    }
+    if (isEmpty())
+        front = rear = 0;
+    else
+        rear = (rear + 1) % MAX;
+    q[rear] = value;
+    printf("Inserted: %d\n", value);
+}
+
+void dequeue(void) {
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Deleted: %d\n", q[front]);
+    if (front == rear)
+        front = rear = -1;
+    else
+        front = (front + 1) % MAX;
+}
+
+void showFrontRear(void) {
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Front: %d\nRear: %d\n", q[front], q[rear]);
+}
+
+int main(void) {
+    int choice, value;
+    do {
+        printf("\n1.Enqueue 2.Dequeue 3.Front and Rear 4.isEmpty 5.isFull 0.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter value: ");
+                scanf("%d", &value);
+                enqueue(value);
+                break;
+            case 2: dequeue(); break;
+            case 3: showFrontRear(); break;
+            case 4: printf(isEmpty() ? "Queue is empty\n" : "Queue is not empty\n"); break;
+            case 5: printf(isFull() ? "Queue is full\n" : "Queue is not full\n"); break;
+            case 0: break;
+            default: printf("Invalid choice\n");
+        }
+    } while (choice != 0);
+    return 0;
+}
