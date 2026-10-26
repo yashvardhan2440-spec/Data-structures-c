@@ -1,0 +1,127 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+typedef struct Node {
+    int data;
+    struct Node *left, *right;
+} Node;
+
+Node *newNode(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) exit(1);
+    n->data = value;
+    n->left = n->right = NULL;
+    return n;
+}
+
+Node *insertLevelOrder(Node *root, int value) {
+    Node *queue[MAX];
+    int front = 0, rear = 0;
+    Node *n = newNode(value);
+    if (root == NULL) return n;
+    queue[rear++] = root;
+    while (front < rear) {
+        Node *current = queue[front++];
+        if (current->left == NULL) {
+            current->left = n;
+            return root;
+        }
+        queue[rear++] = current->left;
+        if (current->right == NULL) {
+            current->right = n;
+            return root;
+        }
+        queue[rear++] = current->right;
+    }
+    return root;
+}
+
+Node *deleteValue(Node *root, int value) {
+    if (root == NULL) {
+        printf("Tree is empty\n");
+        return root;
+    }
+    if (root->left == NULL && root->right == NULL) {
+        if (root->data == value) {
+            free(root);
+            return NULL;
+        }
+        printf("Value not found\n");
+        return root;
+    }
+
+    Node *queue[MAX], *current, *target = NULL, *last = NULL, *lastParent = NULL;
+    int front = 0, rear = 0;
+    queue[rear++] = root;
+    while (front < rear) {
+        current = queue[front++];
+        if (current->data == value && target == NULL) target = current;
+        if (current->left != NULL) {
+            lastParent = current;
+            last = current->left;
+            queue[rear++] = current->left;
+        }
+        if (current->right != NULL) {
+            lastParent = current;
+            last = current->right;
+            queue[rear++] = current->right;
+        }
+    }
+    if (target == NULL) {
+        printf("Value not found\n");
+        return root;
+    }
+    target->data = last->data;
+    if (lastParent->right == last) lastParent->right = NULL;
+    else lastParent->left = NULL;
+    free(last);
+    return root;
+}
+
+int search(Node *root, int value) {
+    Node *queue[MAX];
+    int front = 0, rear = 0;
+    if (root == NULL) return 0;
+    queue[rear++] = root;
+    while (front < rear) {
+        Node *current = queue[front++];
+        if (current->data == value) return 1;
+        if (current->left != NULL) queue[rear++] = current->left;
+        if (current->right != NULL) queue[rear++] = current->right;
+    }
+    return 0;
+}
+
+void displayInorder(Node *root) {
+    if (root == NULL) return;
+    displayInorder(root->left);
+    printf("%d ", root->data);
+    displayInorder(root->right);
+}
+
+int main(void) {
+    Node *root = NULL;
+    int choice, value;
+    do {
+        printf("\n1.Insert 2.Delete 3.Search 4.Display inorder 0.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Value: "); scanf("%d", &value);
+                root = insertLevelOrder(root, value); break;
+            case 2:
+                printf("Value to delete: "); scanf("%d", &value);
+                root = deleteValue(root, value); break;
+            case 3:
+                printf("Value to search: "); scanf("%d", &value);
+                printf(search(root, value) ? "Found\n" : "Not found\n"); break;
+            case 4: displayInorder(root); printf("\n"); break;
+            case 0: break;
+            default: printf("Invalid choice\n");
+        }
+    } while (choice != 0);
+    return 0;
+}

@@ -1,0 +1,70 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct Node {
+    int data;
+    struct Node *left, *right;
+} Node;
+
+Node *newNode(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) exit(1);
+    n->data = value;
+    n->left = n->right = NULL;
+    return n;
+}
+
+Node *buildBST(int preorder[], int *index, int n, long long low, long long high) {
+    if (*index >= n) return NULL;
+    int value = preorder[*index];
+    if (value <= low || value >= high) return NULL;
+    Node *root = newNode(value);
+    (*index)++;
+    root->left = buildBST(preorder, index, n, low, value);
+    root->right = buildBST(preorder, index, n, value, high);
+    return root;
+}
+
+void inorder(Node *root) {
+    if (root == NULL) return;
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root->right);
+}
+
+void postorder(Node *root) {
+    if (root == NULL) return;
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d ", root->data);
+}
+
+int main(void) {
+    int n, i, index = 0;
+    printf("Number of nodes: ");
+    scanf("%d", &n);
+    if (n <= 0) {
+        printf("Tree is empty\n");
+        return 0;
+    }
+    int *preorderValues = (int *)malloc(n * sizeof(int));
+    if (preorderValues == NULL) return 1;
+    printf("Enter preorder sequence:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &preorderValues[i]);
+
+    Node *root = buildBST(preorderValues, &index, n, LLONG_MIN, LLONG_MAX);
+    if (index != n) {
+        printf("Invalid preorder sequence for a BST with distinct keys\n");
+        return 0;
+    }
+    printf("Inorder traversal: ");
+    inorder(root);
+    printf("\nPostorder traversal: ");
+    postorder(root);
+    printf("\n");
+    free(preorderValues);
+    return 0;
+}

@@ -1,0 +1,67 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+typedef struct Node {
+    int data;
+    struct Node *left, *right;
+} Node;
+
+Node *newNode(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) exit(1);
+    n->data = value;
+    n->left = n->right = NULL;
+    return n;
+}
+
+Node *buildTree(void) {
+    Node *root = NULL, *queue[MAX];
+    int front = 0, rear = 0, value;
+    printf("Enter root value (-1 for empty tree): ");
+    scanf("%d", &value);
+    if (value == -1) return NULL;
+    root = newNode(value);
+    queue[rear++] = root;
+    while (front < rear) {
+        Node *current = queue[front++];
+        printf("Left child of %d (-1 for none): ", current->data);
+        scanf("%d", &value);
+        if (value != -1) {
+            current->left = newNode(value);
+            queue[rear++] = current->left;
+        }
+        printf("Right child of %d (-1 for none): ", current->data);
+        scanf("%d", &value);
+        if (value != -1) {
+            current->right = newNode(value);
+            queue[rear++] = current->right;
+        }
+    }
+    return root;
+}
+
+void inorderIterative(Node *root) {
+    Node *stack[MAX], *current = root;
+    int top = -1;
+    while (current != NULL || top != -1) {
+        while (current != NULL) {
+            stack[++top] = current;
+            current = current->left;
+        }
+        current = stack[top--];
+        printf("%d ", current->data);
+        current = current->right;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node *root = buildTree();
+    printf("Iterative inorder traversal: ");
+    inorderIterative(root);
+    return 0;
+}
