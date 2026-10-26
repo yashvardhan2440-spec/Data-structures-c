@@ -1,0 +1,53 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *head = NULL;
+
+void insertEnd(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) return;
+    n->data = value;
+    if (head == NULL) {
+        head = n;
+        n->next = head;
+        return;
+    }
+    Node *current = head;
+    while (current->next != head)
+        current = current->next;
+    current->next = n;
+    n->next = head;
+}
+
+void traverse(void) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    Node *current = head;
+    printf("Circular list: ");
+    do {
+        printf("%d -> ", current->data);
+        current = current->next;
+    } while (current != head);
+    printf("(back to head)\n");
+}
+
+int main(void) {
+    int n, value, i;
+    printf("How many nodes? ");
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        printf("Enter value: ");
+        scanf("%d", &value);
+        insertEnd(value);
+    }
+    traverse();
+    return 0;
+}

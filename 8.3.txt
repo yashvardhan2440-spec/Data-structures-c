@@ -1,0 +1,81 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *newNode(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    n->data = value;
+    n->next = NULL;
+    return n;
+}
+
+void append(Node **head, int value) {
+    Node *n = newNode(value);
+    if (*head == NULL) {
+        *head = n;
+        return;
+    }
+    Node *current = *head;
+    while (current->next != NULL)
+        current = current->next;
+    current->next = n;
+}
+
+Node *mergeSorted(Node *a, Node *b) {
+    Node dummy;
+    Node *tail = &dummy;
+    dummy.next = NULL;
+    while (a != NULL && b != NULL) {
+        if (a->data <= b->data) {
+            tail->next = a;
+            a = a->next;
+        } else {
+            tail->next = b;
+            b = b->next;
+        }
+        tail = tail->next;
+    }
+    tail->next = (a != NULL) ? a : b;
+    return dummy.next;
+}
+
+void display(Node *head) {
+    while (head != NULL) {
+        printf("%d", head->data);
+        if (head->next != NULL) printf(" -> ");
+        head = head->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node *a = NULL, *b = NULL, *merged;
+    int n, m, value, i;
+    printf("Number of elements in sorted list A: ");
+    scanf("%d", &n);
+    printf("Enter %d sorted values:\n", n);
+    for (i = 0; i < n; i++) {
+        scanf("%d", &value);
+        append(&a, value);
+    }
+    printf("Number of elements in sorted list B: ");
+    scanf("%d", &m);
+    printf("Enter %d sorted values:\n", m);
+    for (i = 0; i < m; i++) {
+        scanf("%d", &value);
+        append(&b, value);
+    }
+    merged = mergeSorted(a, b);
+    printf("Merged sorted list: ");
+    display(merged);
+    return 0;
+}

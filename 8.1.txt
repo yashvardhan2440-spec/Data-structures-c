@@ -1,0 +1,81 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *head = NULL;
+
+void insertFront(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) return;
+    n->data = value;
+    n->next = head;
+    head = n;
+}
+
+void insertAfterValue(int key, int value) {
+    Node *current = head;
+    while (current != NULL && current->data != key)
+        current = current->next;
+    if (current == NULL) {
+        printf("Given node not found\n");
+        return;
+    }
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) return;
+    n->data = value;
+    n->next = current->next;
+    current->next = n;
+}
+
+void insertEnd(int value) {
+    Node *n = (Node *)malloc(sizeof(Node));
+    if (n == NULL) return;
+    n->data = value;
+    n->next = NULL;
+    if (head == NULL) {
+        head = n;
+        return;
+    }
+    Node *current = head;
+    while (current->next != NULL)
+        current = current->next;
+    current->next = n;
+}
+
+void display(void) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main(void) {
+    int choice, value, key;
+    do {
+        printf("\n1.Insert front 2.Insert after value 3.Insert end 4.Display 0.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Value: "); scanf("%d", &value);
+                insertFront(value); break;
+            case 2:
+                printf("Existing value: "); scanf("%d", &key);
+                printf("New value: "); scanf("%d", &value);
+                insertAfterValue(key, value); break;
+            case 3:
+                printf("Value: "); scanf("%d", &value);
+                insertEnd(value); break;
+            case 4: display(); break;
+            case 0: break;
+            default: printf("Invalid choice\n");
+        }
+    } while (choice != 0);
+    return 0;
+}
