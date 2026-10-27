@@ -2,17 +2,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #define MAX 100
-
-typedef struct Node {
+ struct Node {
     int data;
     struct Node *left, *right;
 } Node;
 
 Node *newNode(int value) {
     Node *n = (Node *)malloc(sizeof(Node));
-    if (n == NULL) exit(1);
+    if (n == NULL) 
+    exit(1);
     n->data = value;
     n->left = n->right = NULL;
     return n;
